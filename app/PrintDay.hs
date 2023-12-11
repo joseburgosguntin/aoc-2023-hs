@@ -9,7 +9,7 @@ import System.Directory
 -- TODO: add condtion where it checks args
 -- if the day is equal then show something
 -- only make this change if want only Main.hs
-printDay :: Int -> Parser Int -> IO ()
+printDay :: (Show a, Show b) => a -> Parser b -> IO ()
 printDay day parser = do
     currentDir <- getCurrentDirectory
     let inputDir = currentDir <> "/input"
