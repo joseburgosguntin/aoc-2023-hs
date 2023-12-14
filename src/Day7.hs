@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Day7 (part1, part2, totalWinnings, Hand (..), Label (..)) where
+module Day7 where
 
 import Control.Applicative
 import Data.Attoparsec.Text
 import Data.Char (digitToInt, isDigit)
-import Data.List (partition, sortBy, sortOn)
+import Data.List (partition, sort, sortBy, sortOn)
 import Data.Text (Text, group, pack)
 import Text.Read (Lexeme (String))
 
@@ -15,11 +15,11 @@ part1 = totalWinnings <$> handsWithBidsParser
 part2 :: Parser Int
 part2 = undefined
 
-newtype Label = Label Char
+newtype Card = Card Char
     deriving (Eq, Show)
 
-instance Ord Label where
-    Label a <= Label b = case (a, b) of
+instance Ord Card where
+    Card a <= Card b = case (a, b) of
         (_, 'A') -> True
         (a, 'K') | a /= 'A' -> True
         (a, 'Q') | a /= 'A' && a /= 'K' -> True
@@ -29,11 +29,17 @@ instance Ord Label where
         _ -> False
 
 -- is a 5 element array
--- tested Ord
-newtype Hand = Hand [Label]
-    deriving (Eq, Ord, Show)
+newtype Hand = Hand [Card]
+    deriving (Eq, Show)
 
--- tested Ord
+instance Ord Hand where
+    Hand cs1 <= Hand cs2
+        | t1 == t2 = cs1 <= cs2
+        | otherwise = t1 <= t2
+      where
+        t1 = typeFromHand $ Hand cs1
+        t2 = typeFromHand $ Hand cs2
+
 data Type
     = HighCard
     | OnePair
@@ -44,9 +50,8 @@ data Type
     | FiveOfAKind -- strongest
     deriving (Show, Eq, Ord)
 
-labelToChar (Label char) = char
+labelToChar (Card char) = char
 
--- tested ThreeOfAKind
 typeFromHand :: Hand -> Type
 typeFromHand (Hand hand) = case grouped of
     [_] -> FiveOfAKind
@@ -71,24 +76,12 @@ totalWinnings :: [(Hand, Int)] -> Int
 totalWinnings xs =
     sum $ uncurry (*) <$> zip bids multipliers
   where
-    bids = snd <$> sortBy specialCompare xs
+    bids = snd <$> sort xs
     multipliers = [1 .. (length xs)]
 
-bids2 xs = snd <$> sortBy specialCompare xs
-multipliers2 xs = [1 .. (length xs)]
-
-specialCompare :: (Hand, Int) -> (Hand, Int) -> Ordering
-specialCompare (hand1, _) (hand2, _)
-    | type1 == type2 = compare hand1 hand2
-    | otherwise = compare type1 type2
-  where
-    type1 = typeFromHand hand1
-    type2 = typeFromHand hand2
-
--- tested
-labelParser :: Parser Label
+labelParser :: Parser Card
 labelParser = do
-    Label <$> satisfy (`elem` validLabels)
+    Card <$> satisfy (`elem` validLabels)
   where
     validLabels :: String
     validLabels = "AKQJT98765432"

@@ -22,7 +22,7 @@ maintainer:         josem.123burgos@gmail.com
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  Day6, Day7, PrintDay
+    exposed-modules:  Day6, Day7, ParseDay
 
     -- Modules included in this library but not exported.
     -- other-modules:
