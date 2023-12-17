@@ -22,7 +22,7 @@ maintainer:         josem.123burgos@gmail.com
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  Day6, Day7, ParseDay
+    exposed-modules:  Day6, Day7, Day8, ParseDay
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -34,6 +34,7 @@ library
       , attoparsec
       , directory
       , text
+      , containers
     hs-source-dirs:   src
     default-language: Haskell2010
 

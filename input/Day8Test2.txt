@@ -1,0 +1,10 @@
+LR
+
+NNA = (NNB, XXX)
+NNB = (XXX, NNZ)
+NNZ = (NNB, XXX)
+MMA = (MMB, XXX)
+MMB = (MMC, MMC)
+MMC = (MMZ, MMZ)
+MMZ = (MMB, MMB)
+XXX = (XXX, XXX)
